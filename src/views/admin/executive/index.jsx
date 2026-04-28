@@ -26,6 +26,7 @@ const ExecutiveDashboard = () => {
 
   const [chartType, setChartType] = useState("line"); // line, area, bar
   const [visibleSeries, setVisibleSeries] = useState(["Actual", "Expected", "Budget"]);
+  const [timeframe, setTimeframe] = useState("All"); // Month, Year, All
 
   const toggleSeries = (s) => {
     setVisibleSeries(prev => 
@@ -39,10 +40,16 @@ const ExecutiveDashboard = () => {
   // ─── Hero Chart ─────────────────────────────────────────────────────────────
   const trendData = dashboardData.branchDetails[selectedBranch].trend[metric];
   
+  let sliceStart = 0;
+  if (timeframe === "Month") sliceStart = -2;
+  else if (timeframe === "Year") sliceStart = -12;
+  
+  const slicedMonths = dashboardData.months.slice(sliceStart);
+
   const baseSeries = [
-    { name: "Actual", data: trendData.actual },
-    { name: "Expected", data: trendData.expected },
-    { name: "Budget", data: trendData.budget },
+    { name: "Actual", data: trendData.actual.slice(sliceStart) },
+    { name: "Expected", data: trendData.expected.slice(sliceStart) },
+    { name: "Budget", data: trendData.budget.slice(sliceStart) },
   ];
 
   const heroSeries = baseSeries.filter(s => visibleSeries.includes(s.name));
@@ -50,15 +57,15 @@ const ExecutiveDashboard = () => {
   let heroOptions;
   if (chartType === "bar") {
     heroOptions = {
-      ...getBarChartOptions(dashboardData.months),
+      ...getBarChartOptions(slicedMonths),
       plotOptions: { bar: { horizontal: false, columnWidth: "55%", borderRadius: 4 } },
-      xaxis: { ...getBarChartOptions(dashboardData.months).xaxis, labels: { style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" } } },
+      xaxis: { ...getBarChartOptions(slicedMonths).xaxis, labels: { style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" } } },
       yaxis: { show: true, labels: { formatter: (val) => `₹${val}k`, style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" } } }
     };
   } else {
     heroOptions = {
-      ...getLineChartOptions(dashboardData.months),
-      chart: { ...getLineChartOptions(dashboardData.months).chart, type: chartType === "area" ? "area" : "line" },
+      ...getLineChartOptions(slicedMonths),
+      chart: { ...getLineChartOptions(slicedMonths).chart, type: chartType === "area" ? "area" : "line" },
       fill: chartType === "area" ? { type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.3, stops: [0, 90, 100] } } : { opacity: 1 }
     };
   }
@@ -164,8 +171,25 @@ const ExecutiveDashboard = () => {
           </div>
           
           <div className="flex items-center gap-2">
+            {/* Timeframe Selector Pills */}
+            <div className="hidden lg:flex items-center gap-1 rounded-lg bg-gray-50 p-1 dark:bg-navy-900/50 mr-2 border border-gray-100 dark:border-white/10">
+              {["Month", "Year", "All"].map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTimeframe(t)}
+                  className={`rounded-md px-3 py-1 text-xs font-bold transition-all capitalize ${
+                    timeframe === t
+                      ? "bg-white text-brand-500 shadow-sm dark:bg-navy-700 dark:text-white"
+                      : "text-gray-400 hover:text-brand-500"
+                  }`}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+
             {/* Chart Type Selector Pills */}
-            <div className="hidden lg:flex items-center gap-1 rounded-lg bg-gray-50 p-1 dark:bg-navy-900/50 mr-2">
+            <div className="hidden lg:flex items-center gap-1 rounded-lg bg-gray-50 p-1 dark:bg-navy-900/50 mr-2 border border-gray-100 dark:border-white/10">
               {["line", "area", "bar"].map((type) => (
                 <button
                   key={type}
