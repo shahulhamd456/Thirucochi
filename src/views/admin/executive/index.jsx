@@ -148,7 +148,8 @@ const ExecutiveDashboard = () => {
 
       {/* ── KPI Strip ── */}
       <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <Widget icon={<MdAttachMoney />} title={"Today's Gold Rate"} subtitle={kpiData.goldRate} detail={"Updated daily"} trend={"+1.2%"} />
+       <Widget icon={<MdShowChart />} title={"Total Revenue"} subtitle={kpiData.revenue} detail={"This quarter"} trend={"+8.5%"} />
+        <Widget icon={<MdAttachMoney />} title={"Total Expenses"} subtitle={kpiData.expenses} detail={"Updated daily"} trend={"+1.2%"} />
         <Widget
           icon={<MdAccountBalanceWallet />}
           title={"Total Customers"}
@@ -157,7 +158,7 @@ const ExecutiveDashboard = () => {
           trend={"+5.4%"}
         />
         <Widget icon={<MdTrendingUp />} title={"Active Loans"} subtitle={kpiData.aum} detail={"Portfolio value"} trend={"+12%"} />
-        <Widget icon={<MdShowChart />} title={"Total Revenue"} subtitle={kpiData.revenue} detail={"This quarter"} trend={"+8.5%"} />
+       
       </div>
 
       {/* ── Large Hero Chart ── */}
