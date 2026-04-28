@@ -18,7 +18,7 @@ import {
 const METRIC_LABELS = { revenue: "Revenue", expense: "Expense", profit: "Profit" };
 
 const ExecutiveDashboard = () => {
-  const [selectedBranch, setSelectedBranch] = useState("Kochi");
+  const [selectedBranch, setSelectedBranch] = useState("All Branches");
   const [metric, setMetric] = useState("revenue");
   
   const [compareBranchA, setCompareBranchA] = useState("Kochi");
@@ -35,10 +35,14 @@ const ExecutiveDashboard = () => {
   };
 
   // ─── KPI Data ───────────────────────────────────────────────────────────────
-  const kpiData = dashboardData.branchDetails[selectedBranch].kpi;
+  const kpiData = selectedBranch === "All Branches"
+    ? dashboardData.aggregate.kpi
+    : dashboardData.branchDetails[selectedBranch].kpi;
 
   // ─── Hero Chart ─────────────────────────────────────────────────────────────
-  const trendData = dashboardData.branchDetails[selectedBranch].trend[metric];
+  const trendData = selectedBranch === "All Branches"
+    ? dashboardData.aggregate[metric]
+    : dashboardData.branchDetails[selectedBranch].trend[metric];
   
   let sliceStart = 0;
   if (timeframe === "Month") sliceStart = -2;
@@ -76,18 +80,24 @@ const ExecutiveDashboard = () => {
   const branchBData = dashboardData.branchDetails[compareBranchB].compareData;
 
   // ─── Secondary Charts ───────────────────────────────────────────────────────
-  const productMixSeries = dashboardData.branchDetails[selectedBranch].productMix;
+  const productMixSeries = selectedBranch === "All Branches"
+    ? dashboardData.aggregate.productMix
+    : dashboardData.branchDetails[selectedBranch].productMix;
   const productMixOptions = getPieChartOptions(dashboardData.products);
 
   const expenseSeries = [
     {
       name: "Expenses",
-      data: dashboardData.branchDetails[selectedBranch].expenseBreakdown,
+      data: selectedBranch === "All Branches"
+        ? dashboardData.aggregate.expenseBreakdown
+        : dashboardData.branchDetails[selectedBranch].expenseBreakdown,
     },
   ];
   const expenseOptions = getBarChartOptions(dashboardData.expenses);
 
-  const taskMetrics = dashboardData.branchDetails[selectedBranch].taskMetrics;
+  const taskMetrics = selectedBranch === "All Branches"
+    ? dashboardData.aggregate.taskMetrics
+    : dashboardData.branchDetails[selectedBranch].taskMetrics;
 
   return (
     <div className="pt-2">
@@ -119,7 +129,9 @@ const ExecutiveDashboard = () => {
           <Dropdown
             button={
               <button className="flex items-center justify-between gap-2 w-full md:w-44 rounded-xl border border-brand-200 bg-brand-50 px-4 py-2.5 text-sm font-bold text-brand-600 transition-colors hover:bg-brand-100 focus:outline-none focus:ring-2 focus:ring-brand-400 dark:border-brand-700 dark:bg-brand-400/10 dark:text-brand-400 dark:hover:bg-brand-400/20">
-                <span className="flex items-center"><MdOutlineLocationOn className="mr-1.5 text-lg" /> {selectedBranch}</span>
+                <span className="flex items-center">
+                  {selectedBranch === "All Branches" ? <><MdOutlineBusiness className="mr-1.5 text-lg" /> All Branches</> : <><MdOutlineLocationOn className="mr-1.5 text-lg" /> {selectedBranch}</>}
+                </span>
                 <MdKeyboardArrowDown className="text-xl" />
               </button>
             }
@@ -127,7 +139,16 @@ const ExecutiveDashboard = () => {
             classNames="py-2 top-0 -left-0 w-full md:w-44 rounded-xl bg-white shadow-xl dark:bg-navy-700 border border-gray-100 dark:border-white/10"
           >
             <div className="flex flex-col gap-1 px-2">
-
+              <button
+                onClick={() => setSelectedBranch("All Branches")}
+                className={`flex w-full items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                  selectedBranch === "All Branches"
+                    ? "bg-brand-50 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
+                    : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
+                }`}
+              >
+                <MdOutlineBusiness className="mr-2 text-lg" /> All Branches
+              </button>
               {dashboardData.branches.map((branch) => (
                 <button
                   key={branch}
