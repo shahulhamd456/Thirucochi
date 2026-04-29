@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import BarChart from "components/charts/BarChart";
-import LineChart from "components/charts/LineChart";
 import PieChart from "components/charts/PieChart";
 import Card from "components/card";
 import Widget from "components/widget/Widget";
@@ -13,6 +12,8 @@ import {
   getComparisonBarChartOptions,
   getPieChartOptions,
   dashboardData,
+  getTrendData,
+  formatCurrency,
 } from "./variables/charts";
 
 const METRIC_LABELS = { revenue: "Revenue", expense: "Expense", profit: "Profit" };
@@ -24,7 +25,6 @@ const ExecutiveDashboard = () => {
   const [compareBranchA, setCompareBranchA] = useState("Kochi");
   const [compareBranchB, setCompareBranchB] = useState("Trivandrum");
 
-  const [chartType, setChartType] = useState("line"); // line, area, bar
   const [visibleSeries, setVisibleSeries] = useState(["Actual", "Expected", "Budget"]);
   const [timeframe, setTimeframe] = useState("All"); // Month, Year, All
 
@@ -40,39 +40,31 @@ const ExecutiveDashboard = () => {
     : dashboardData.branchDetails[selectedBranch].kpi;
 
   // ─── Hero Chart ─────────────────────────────────────────────────────────────
-  const trendData = selectedBranch === "All Branches"
-    ? dashboardData.aggregate[metric]
-    : dashboardData.branchDetails[selectedBranch].trend[metric];
-  
-  let sliceStart = 0;
-  if (timeframe === "Month") sliceStart = -2;
-  else if (timeframe === "Year") sliceStart = -12;
-  
-  const slicedMonths = dashboardData.months.slice(sliceStart);
+  const trendData = getTrendData(selectedBranch, metric, timeframe);
 
   const baseSeries = [
-    { name: "Actual", data: trendData.actual.slice(sliceStart) },
-    { name: "Expected", data: trendData.expected.slice(sliceStart) },
-    { name: "Budget", data: trendData.budget.slice(sliceStart) },
+    { name: "Actual", data: trendData.actual },
+    { name: "Expected", data: trendData.expected },
+    { name: "Budget", data: trendData.budget },
   ];
 
   const heroSeries = baseSeries.filter(s => visibleSeries.includes(s.name));
   
-  let heroOptions;
-  if (chartType === "bar") {
-    heroOptions = {
-      ...getBarChartOptions(slicedMonths),
-      plotOptions: { bar: { horizontal: false, columnWidth: "55%", borderRadius: 4 } },
-      xaxis: { ...getBarChartOptions(slicedMonths).xaxis, labels: { style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" } } },
-      yaxis: { show: true, labels: { formatter: (val) => `₹${val}k`, style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" } } }
-    };
-  } else {
-    heroOptions = {
-      ...getLineChartOptions(slicedMonths),
-      chart: { ...getLineChartOptions(slicedMonths).chart, type: chartType === "area" ? "area" : "line" },
-      fill: chartType === "area" ? { type: "gradient", gradient: { shadeIntensity: 1, opacityFrom: 0.7, opacityTo: 0.3, stops: [0, 90, 100] } } : { opacity: 1 }
-    };
-  }
+  const heroOptions = {
+    ...getBarChartOptions(trendData.categories),
+    plotOptions: { bar: { horizontal: false, columnWidth: "55%", borderRadius: 4 } },
+    xaxis: { 
+      ...getBarChartOptions(trendData.categories).xaxis, 
+      tickAmount: undefined,
+      labels: { 
+        style: { colors: "#A3AED0", fontSize: "11px", fontWeight: "500" },
+        hideOverlappingLabels: false,
+        rotate: trendData.categories.length > 12 ? -45 : 0,
+        rotateAlways: trendData.categories.length > 12,
+      } 
+    },
+    yaxis: { show: true, labels: { formatter: (val) => formatCurrency(val), style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" } } }
+  };
 
 
   // ─── Head-to-Head Comparison Data ─────────────────────────────────────────
@@ -80,17 +72,17 @@ const ExecutiveDashboard = () => {
   const branchBData = dashboardData.branchDetails[compareBranchB].compareData;
 
   // ─── Secondary Charts ───────────────────────────────────────────────────────
-  const productMixSeries = selectedBranch === "All Branches"
+  const productMixSeries = (selectedBranch === "All Branches"
     ? dashboardData.aggregate.productMix
-    : dashboardData.branchDetails[selectedBranch].productMix;
+    : dashboardData.branchDetails[selectedBranch].productMix).map(v => v * 10000);
   const productMixOptions = getPieChartOptions(dashboardData.products);
 
   const expenseSeries = [
     {
       name: "Expenses",
-      data: selectedBranch === "All Branches"
+      data: (selectedBranch === "All Branches"
         ? dashboardData.aggregate.expenseBreakdown
-        : dashboardData.branchDetails[selectedBranch].expenseBreakdown,
+        : dashboardData.branchDetails[selectedBranch].expenseBreakdown).map(v => v * 10000),
     },
   ];
   const expenseOptions = getBarChartOptions(dashboardData.expenses);
@@ -108,22 +100,6 @@ const ExecutiveDashboard = () => {
           <p className="text-sm text-gray-400">Filters apply to all charts below</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full md:w-auto">
-          {/* Metric Toggle — pill-style */}
-          <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1 dark:bg-navy-900">
-            {["revenue", "expense", "profit"].map((m) => (
-              <button
-                key={m}
-                onClick={() => setMetric(m)}
-                className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition-all ${
-                  metric === m
-                    ? "bg-white text-[#003366] shadow dark:bg-navy-700 dark:text-white"
-                    : "text-gray-500 hover:text-[#003366] dark:text-gray-400"
-                }`}
-              >
-                {METRIC_LABELS[m]}
-              </button>
-            ))}
-          </div>
 
           {/* Custom Branch Selector Dropdown */}
           <Dropdown
@@ -192,10 +168,27 @@ const ExecutiveDashboard = () => {
             <p className="text-sm text-gray-400">Month-by-month Actual vs. Budget</p>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Metric Toggle — pill-style */}
+            <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1 dark:bg-navy-900">
+              {["revenue", "expense", "profit"].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setMetric(m)}
+                  className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition-all ${
+                    metric === m
+                      ? "bg-white text-[#003366] shadow dark:bg-navy-700 dark:text-white"
+                      : "text-gray-500 hover:text-[#003366] dark:text-gray-400"
+                  }`}
+                >
+                  {METRIC_LABELS[m]}
+                </button>
+              ))}
+            </div>
+
             {/* Timeframe Selector Pills */}
             <div className="hidden lg:flex items-center gap-1 rounded-lg bg-gray-50 p-1 dark:bg-navy-900/50 mr-2 border border-gray-100 dark:border-white/10">
-              {["Month", "Year", "All"].map((t) => (
+              {["All", "Years", "Months"].map((t) => (
                 <button
                   key={t}
                   onClick={() => setTimeframe(t)}
@@ -210,22 +203,7 @@ const ExecutiveDashboard = () => {
               ))}
             </div>
 
-            {/* Chart Type Selector Pills */}
-            <div className="hidden lg:flex items-center gap-1 rounded-lg bg-gray-50 p-1 dark:bg-navy-900/50 mr-2 border border-gray-100 dark:border-white/10">
-              {["line", "area", "bar"].map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setChartType(type)}
-                  className={`rounded-md px-3 py-1 text-xs font-bold transition-all capitalize ${
-                    chartType === type
-                      ? "bg-white text-brand-500 shadow-sm dark:bg-navy-700 dark:text-white"
-                      : "text-gray-400 hover:text-brand-500"
-                  }`}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
+
 
             <Dropdown
               button={
@@ -240,6 +218,17 @@ const ExecutiveDashboard = () => {
               <div className="flex flex-col px-4 py-2">
                 <span className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Select Branch</span>
                 <div className="grid grid-cols-1 gap-1 mb-4 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                  <button
+                    onClick={() => setSelectedBranch("All Branches")}
+                    className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      selectedBranch === "All Branches"
+                        ? "bg-brand-50 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
+                        : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
+                    }`}
+                  >
+                    <span className="flex items-center"><MdOutlineBusiness className="mr-2" /> All Branches</span>
+                    {selectedBranch === "All Branches" && <MdCheck />}
+                  </button>
                   {dashboardData.branches.map((b) => (
                     <button
                       key={b}
@@ -285,11 +274,7 @@ const ExecutiveDashboard = () => {
           </div>
         </div>
         <div className="h-[450px] w-full">
-          {chartType === "bar" ? (
-            <BarChart chartData={heroSeries} chartOptions={heroOptions} />
-          ) : (
-            <LineChart series={heroSeries} options={heroOptions} />
-          )}
+          <BarChart chartData={heroSeries} chartOptions={heroOptions} />
         </div>
       </Card>
 
@@ -409,7 +394,7 @@ const ExecutiveDashboard = () => {
             </p>
           </div>
           <div className="h-[250px] flex justify-center items-center">
-            <PieChart series={productMixSeries} options={productMixOptions} />
+            <PieChart key={selectedBranch} series={productMixSeries} options={productMixOptions} />
           </div>
         </Card>
 

@@ -1,3 +1,12 @@
+export const formatCurrency = (val) => {
+  const value = Number(val);
+  if (isNaN(value)) return val;
+  if (value >= 10000000) return `₹${(value / 10000000).toFixed(2)} Cr`;
+  if (value >= 100000) return `₹${(value / 100000).toFixed(2)} L`;
+  if (value >= 1000) return `₹${(value / 1000).toFixed(1)} k`;
+  return `₹${value}`;
+};
+
 export const getBarChartOptions = (categories) => ({
   chart: { toolbar: { show: false } },
   plotOptions: {
@@ -7,14 +16,15 @@ export const getBarChartOptions = (categories) => ({
       dataLabels: { position: 'top' },
     }
   },
-  tooltip: { theme: "dark", y: { formatter: function (val) { return val >= 1000 ? "₹" + (val / 1000).toFixed(1) + "k" : "₹" + val; } } },
-  dataLabels: { enabled: true, style: { fontSize: "10px", fontWeight: "bold", colors: ["#fff"] } },
+  tooltip: { theme: "dark", y: { formatter: function (val) { return formatCurrency(val); } } },
+  dataLabels: { enabled: false },
   stroke: { show: true, width: 2, colors: ["transparent"] },
   xaxis: {
     categories: categories,
     axisBorder: { show: false },
     axisTicks: { show: false },
-    labels: { style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" }, formatter: (value) => { if (typeof value === 'number') { return value >= 1000 ? `₹${(value / 1000).toFixed(1)}k` : `₹${value}`; } return value; } },
+    tickAmount: 4,
+    labels: { style: { colors: "#A3AED0", fontSize: "11px", fontWeight: "500" }, formatter: (value) => formatCurrency(value) },
   },
   yaxis: {
     show: true,
@@ -43,7 +53,7 @@ export const getComparisonBarChartOptions = (categories, highlightedBranch = nul
     show: true,
     labels: {
       style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" },
-      formatter: (value) => value >= 1000 ? `${(value / 1000).toFixed(1)}k` : value,
+      formatter: (value) => formatCurrency(value),
     },
   },
   grid: { borderColor: "rgba(163, 174, 208, 0.3)", strokeDashArray: 4, yaxis: { lines: { show: true } } },
@@ -62,9 +72,9 @@ export const getLineChartOptions = (categories) => ({
   chart: { toolbar: { show: false }, dropShadow: { enabled: true, top: 13, left: 0, blur: 10, opacity: 0.1, color: "#4318FF" } },
   colors: ["#4318FF", "#39B8FF", "#6AD2FF"],
   markers: { size: 5, colors: "white", strokeColors: ["#4318FF", "#39B8FF", "#6AD2FF"], strokeWidth: 3, strokeOpacity: 0.9, strokeDashArray: 0, fillOpacity: 1, discrete: [], shape: "circle", radius: 2, offsetX: 0, offsetY: 0, hover: { size: 7 } },
-  tooltip: { theme: "dark", y: { formatter: function (val) { return val >= 1000 ? "₹" + (val / 1000).toFixed(1) + "k" : "₹" + val; } } },
-  dataLabels: { enabled: true, offsetY: -5, style: { fontSize: "10px", fontWeight: "bold", colors: ["#A3AED0"] }, background: { enabled: true, foreColor: "#fff", padding: 4, borderRadius: 2, borderWidth: 0, opacity: 0.9 } },
-  stroke: { curve: "smooth", type: "line" },
+  tooltip: { theme: "dark", y: { formatter: function (val) { return formatCurrency(val); } } },
+  dataLabels: { enabled: false },
+  stroke: { curve: "smooth", width: 3 },
   xaxis: {
     categories: categories,
     axisBorder: { show: false },
@@ -75,7 +85,7 @@ export const getLineChartOptions = (categories) => ({
     show: true,
     labels: {
       style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" },
-      formatter: (value) => value >= 1000 ? `₹${(value / 1000).toFixed(1)}k` : `₹${value}`,
+      formatter: (value) => formatCurrency(value),
     },
   },
   legend: { show: true, position: "top", horizontalAlign: "right" },
@@ -88,28 +98,19 @@ export const getPieChartOptions = (labels) => ({
   chart: { width: "100%" },
   states: { hover: { filter: { type: "none" } } },
   legend: { show: true, position: "bottom" },
-  dataLabels: { enabled: true, dropShadow: { enabled: false }, formatter: function (val) { return val.toFixed(1) + "%"; } },
+  dataLabels: { enabled: false },
   hover: { mode: null },
   plotOptions: { 
     pie: { 
       expandOnClick: false, 
-      donut: { 
-        size: "75%", 
-        labels: { 
-          show: true, 
-          name: { show: true, fontSize: "14px", color: "#A3AED0" }, 
-          value: { show: true, fontSize: "22px", fontWeight: "bold", color: "#003366", formatter: function (val) { return val >= 1000 ? (val / 1000).toFixed(1) + "k" : val; } },
-          total: { show: true, showAlways: true, label: "Total", fontSize: "14px", color: "#A3AED0", formatter: function (w) { const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0); return total >= 1000 ? (total / 1000).toFixed(1) + "k" : total; } }
-        } 
-      } 
     } 
   },
-  tooltip: { theme: "dark", y: { formatter: function (val) { return val >= 1000 ? (val / 1000).toFixed(1) + "k" : val; } } },
+  tooltip: { theme: "dark", y: { formatter: function (val) { return formatCurrency(val); } } },
 });
 
 export const dashboardData = {
   branches: ["Kochi", "Trivandrum", "Calicut", "Thrissur", "Kollam", "Kannur", "Alappuzha", "Kottayam", "Palakkad"],
-  months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+  months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
   products: ["Gold Loan", "Personal Loan", "Business Loan", "Vehicle Loan"],
   expenses: ["Salary", "Rent", "Marketing", "Operations"],
   
@@ -117,7 +118,7 @@ export const dashboardData = {
     revenue: { actual: [4000, 3000, 2500, 2000, 1800, 1600, 1400, 1200, 1000], expected: [4100, 2900, 2550, 2050, 1850, 1550, 1425, 1225, 1025], budget: [4200, 2800, 2600, 2100, 1900, 1500, 1450, 1250, 1050] },
     expense: { actual: [1500, 1200, 1000, 800, 700, 650, 550, 450, 400], expected: [1450, 1250, 975, 825, 725, 625, 575, 475, 400], budget: [1400, 1300, 950, 850, 750, 600, 600, 500, 400] },
     profit: { actual: [2500, 1800, 1500, 1200, 1100, 950, 850, 750, 600], expected: [2650, 1650, 1575, 1225, 1125, 925, 850, 750, 625], budget: [2800, 1500, 1650, 1250, 1150, 900, 850, 750, 650] },
-    kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 450 Cr", customers: "15,240", revenue: "₹ 12.5 Cr" },
+    kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 450 Cr", customers: "15,240", revenue: "₹ 12.5 Cr", expenses: "₹ 4.5 Cr" },
     productMix: [6000, 2500, 2000, 1000],
     expenseBreakdown: [2500, 1200, 500, 300],
     taskMetrics: { total: 1250, completed: 850, pending: 300, inProgress: 100 }
@@ -147,7 +148,7 @@ export const dashboardData = {
   
   branchDetails: {
     "Kochi": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 150 Cr", customers: "5,100", revenue: "₹ 4.0 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 150 Cr", customers: "5,100", revenue: "₹ 4.0 Cr", expenses: "₹ 1.5 Cr" },
       trend: {
         revenue: { actual: [600, 650, 700, 680, 750, 800], expected: [610, 645, 705, 690, 755, 805], budget: [620, 640, 710, 700, 760, 810] },
         expense: { actual: [200, 210, 205, 220, 230, 240], expected: [205, 213, 208, 223, 233, 243], budget: [210, 215, 210, 225, 235, 245] },
@@ -165,7 +166,7 @@ export const dashboardData = {
       }
     },
     "Trivandrum": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 120 Cr", customers: "4,200", revenue: "₹ 3.0 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 120 Cr", customers: "4,200", revenue: "₹ 3.0 Cr", expenses: "₹ 1.2 Cr" },
       trend: {
         revenue: { actual: [450, 480, 500, 520, 510, 540], expected: [455, 485, 505, 525, 515, 545], budget: [460, 490, 510, 530, 520, 550] },
         expense: { actual: [180, 185, 190, 195, 200, 205], expected: [183, 188, 193, 198, 203, 208], budget: [185, 190, 195, 200, 205, 210] },
@@ -183,7 +184,7 @@ export const dashboardData = {
       }
     },
     "Calicut": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 100 Cr", customers: "3,500", revenue: "₹ 2.5 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 100 Cr", customers: "3,500", revenue: "₹ 2.5 Cr", expenses: "₹ 1.0 Cr" },
       trend: {
         revenue: { actual: [380, 400, 410, 420, 440, 450], expected: [385, 405, 415, 425, 445, 455], budget: [390, 410, 420, 430, 450, 460] },
         expense: { actual: [150, 155, 160, 165, 170, 175], expected: [153, 158, 163, 168, 173, 178], budget: [155, 160, 165, 170, 175, 180] },
@@ -201,7 +202,7 @@ export const dashboardData = {
       }
     },
     "Thrissur": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 80 Cr", customers: "2,440", revenue: "₹ 2.0 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 80 Cr", customers: "2,440", revenue: "₹ 2.0 Cr", expenses: "₹ 0.75 Cr" },
       trend: {
         revenue: { actual: [300, 320, 330, 340, 350, 360], expected: [305, 325, 335, 345, 355, 365], budget: [310, 330, 340, 350, 360, 370] },
         expense: { actual: [120, 125, 130, 135, 140, 145], expected: [123, 128, 133, 138, 143, 148], budget: [125, 130, 135, 140, 145, 150] },
@@ -219,7 +220,7 @@ export const dashboardData = {
       }
     },
     "Kollam": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 70 Cr", customers: "2,100", revenue: "₹ 1.8 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 70 Cr", customers: "2,100", revenue: "₹ 1.8 Cr", expenses: "₹ 0.64 Cr" },
       trend: {
         revenue: { actual: [280, 290, 300, 310, 310, 310], expected: [285, 295, 305, 315, 320, 325], budget: [290, 300, 310, 320, 330, 340] },
         expense: { actual: [110, 115, 120, 120, 120, 115], expected: [113, 118, 123, 125, 125, 123], budget: [115, 120, 125, 130, 130, 130] },
@@ -237,7 +238,7 @@ export const dashboardData = {
       }
     },
     "Kannur": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 65 Cr", customers: "1,900", revenue: "₹ 1.6 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 65 Cr", customers: "1,900", revenue: "₹ 1.6 Cr", expenses: "₹ 0.55 Cr" },
       trend: {
         revenue: { actual: [250, 260, 270, 260, 280, 280], expected: [255, 265, 275, 265, 285, 285], budget: [260, 270, 280, 270, 290, 290] },
         expense: { actual: [100, 105, 110, 105, 115, 115], expected: [103, 108, 113, 108, 118, 118], budget: [105, 110, 115, 110, 120, 120] },
@@ -255,7 +256,7 @@ export const dashboardData = {
       }
     },
     "Alappuzha": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 60 Cr", customers: "1,800", revenue: "₹ 1.4 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 60 Cr", customers: "1,800", revenue: "₹ 1.4 Cr", expenses: "₹ 0.47 Cr" },
       trend: {
         revenue: { actual: [220, 230, 240, 230, 240, 240], expected: [225, 235, 245, 235, 245, 245], budget: [230, 240, 250, 240, 250, 250] },
         expense: { actual: [90, 95, 100, 95, 100, 100], expected: [93, 98, 103, 98, 103, 103], budget: [95, 100, 105, 100, 105, 105] },
@@ -273,7 +274,7 @@ export const dashboardData = {
       }
     },
     "Kottayam": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 55 Cr", customers: "1,600", revenue: "₹ 1.2 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 55 Cr", customers: "1,600", revenue: "₹ 1.2 Cr", expenses: "₹ 0.39 Cr" },
       trend: {
         revenue: { actual: [200, 200, 210, 200, 200, 190], expected: [205, 205, 215, 205, 205, 195], budget: [210, 210, 220, 210, 210, 200] },
         expense: { actual: [80, 80, 85, 80, 80, 75], expected: [83, 83, 88, 83, 83, 78], budget: [85, 85, 90, 85, 85, 80] },
@@ -291,7 +292,7 @@ export const dashboardData = {
       }
     },
     "Palakkad": {
-      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 50 Cr", customers: "1,400", revenue: "₹ 1.0 Cr" },
+      kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 50 Cr", customers: "1,400", revenue: "₹ 1.0 Cr", expenses: "₹ 0.31 Cr" },
       trend: {
         revenue: { actual: [180, 180, 180, 170, 160, 150], expected: [185, 185, 185, 175, 165, 155], budget: [190, 190, 190, 180, 170, 160] },
         expense: { actual: [70, 70, 70, 65, 60, 55], expected: [73, 73, 73, 68, 63, 58], budget: [75, 75, 75, 70, 65, 60] },
@@ -309,4 +310,95 @@ export const dashboardData = {
       }
     }
   }
+};
+
+export const getTrendData = (branch, metric, timeframe) => {
+  const padData = (data, factor = 1) => {
+    let padded = [...data];
+    if (padded.length < 12) {
+      const lastVal = padded[padded.length - 1] || 100;
+      while (padded.length < 12) padded.push(lastVal);
+    } else if (padded.length > 12) {
+      padded = padded.slice(0, 12);
+    }
+    return padded.map(v => Math.round(v * factor * 10000));
+  };
+
+  const sumArray = arr => arr.reduce((a, b) => a + b, 0);
+
+  const getBaseData = (b) => {
+    if (b === "All Branches") return dashboardData.aggregate[metric];
+    return dashboardData.branchDetails[b]?.trend[metric] || { actual: [], expected: [], budget: [] };
+  };
+
+  if (timeframe === "All") {
+    // Total company data across all branches
+    return {
+      categories: dashboardData.branches,
+      actual: dashboardData.branches.map(b => {
+        const d = getBaseData(b).actual;
+        return sumArray(padData(d)) + sumArray(padData(d, 1.15));
+      }),
+      expected: dashboardData.branches.map(b => {
+        const d = getBaseData(b).expected;
+        return sumArray(padData(d)) + sumArray(padData(d, 1.15));
+      }),
+      budget: dashboardData.branches.map(b => {
+        const d = getBaseData(b).budget;
+        return sumArray(padData(d)) + sumArray(padData(d, 1.15));
+      })
+    };
+  }
+
+  const baseData = getBaseData(branch);
+
+  if (timeframe === "Years") {
+    const years = [];
+    const actual = [];
+    const expected = [];
+    const budget = [];
+    
+    const targetActual = sumArray(padData(baseData.actual, 1.15));
+    const targetExpected = sumArray(padData(baseData.expected, 1.15));
+    const targetBudget = sumArray(padData(baseData.budget, 1.15));
+
+    const rate = 1.12; 
+    
+    for (let i = 0; i < 25; i++) {
+      const year = 2002 + i;
+      years.push(year.toString());
+      
+      const power = 24 - i; 
+      const factor = Math.pow(rate, power);
+      const variance = 1 + (Math.random() * 0.06 - 0.03);
+      
+      actual.push(Math.round((targetActual / factor) * variance));
+      expected.push(Math.round((targetExpected / factor) * variance));
+      budget.push(Math.round((targetBudget / factor) * variance));
+    }
+
+    return {
+      categories: years,
+      actual,
+      expected,
+      budget
+    };
+  }
+
+  if (timeframe === "Months") {
+    return {
+      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      actual: padData(baseData.actual),
+      expected: padData(baseData.expected),
+      budget: padData(baseData.budget)
+    };
+  }
+
+  // Default fallback
+  return {
+    categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    actual: padData(baseData.actual),
+    expected: padData(baseData.expected),
+    budget: padData(baseData.budget)
+  };
 };

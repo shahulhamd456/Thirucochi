@@ -6,7 +6,7 @@ const LineChart = (props) => {
   return (
     <Chart
       options={options}
-      type="line"
+      type={options?.chart?.type || "line"}
       width="100%"
       height="100%"
       series={series}
