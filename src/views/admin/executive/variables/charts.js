@@ -94,7 +94,7 @@ export const getLineChartOptions = (categories) => ({
 
 export const getPieChartOptions = (labels) => ({
   labels: labels,
-  colors: ["#4318FF", "#6AD2FF", "#01B574", "#FFB547", "#E2E8F0"],
+  colors: ["#4318FF", "#6AD2FF", "#01B574", "#FFB547", "#E2E8F0", "#8C52FF", "#FF914D"],
   chart: { width: "100%" },
   states: { hover: { filter: { type: "none" } } },
   legend: { show: true, position: "bottom" },
@@ -111,7 +111,7 @@ export const getPieChartOptions = (labels) => ({
 export const dashboardData = {
   branches: ["Kochi", "Trivandrum", "Calicut", "Thrissur", "Kollam", "Kannur", "Alappuzha", "Kottayam", "Palakkad"],
   months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
-  products: ["Gold Loan", "Personal Loan", "Business Loan", "Vehicle Loan"],
+  products: ["Fixed Contribution", "Reoccurring Deposit", "Savings Contribution", "Gold Loan", "Vyapar Loan", "Sub Debt", "NCD"],
   expenses: ["Salary", "Rent", "Marketing", "Operations"],
   
   aggregate: {
@@ -119,7 +119,7 @@ export const dashboardData = {
     expense: { actual: [1500, 1200, 1000, 800, 700, 650, 550, 450, 400], expected: [1450, 1250, 975, 825, 725, 625, 575, 475, 400], budget: [1400, 1300, 950, 850, 750, 600, 600, 500, 400] },
     profit: { actual: [2500, 1800, 1500, 1200, 1100, 950, 850, 750, 600], expected: [2650, 1650, 1575, 1225, 1125, 925, 850, 750, 625], budget: [2800, 1500, 1650, 1250, 1150, 900, 850, 750, 650] },
     kpi: { goldRate: "₹ 7,100 / gm", aum: "₹ 450 Cr", customers: "15,240", revenue: "₹ 12.5 Cr", expenses: "₹ 4.5 Cr" },
-    productMix: [6000, 2500, 2000, 1000],
+    productMix: [3000, 2000, 1500, 2000, 1500, 1000, 500],
     expenseBreakdown: [2500, 1200, 500, 300],
     taskMetrics: { total: 1250, completed: 850, pending: 300, inProgress: 100 }
   },
@@ -154,13 +154,13 @@ export const dashboardData = {
         expense: { actual: [200, 210, 205, 220, 230, 240], expected: [205, 213, 208, 223, 233, 243], budget: [210, 215, 210, 225, 235, 245] },
         profit: { actual: [400, 440, 495, 460, 520, 560], expected: [405, 433, 498, 468, 523, 563], budget: [410, 425, 500, 475, 525, 565] }
       },
-      productMix: [2500, 800, 500, 200],
+      productMix: [1200, 800, 600, 700, 400, 200, 100],
       expenseBreakdown: [1000, 300, 150, 50],
       taskMetrics: { total: 450, completed: 320, pending: 100, inProgress: 30 },
       compareData: {
         totalRevenue: "₹ 4.18 Cr",
         totalProfit: "₹ 2.87 Cr",
-        topProduct: "Gold Loan (62%)",
+        topProduct: "Fixed Contribution (30%)",
         highestExpense: "Salary (66%)",
         staffCount: "14 Employees"
       }
@@ -172,13 +172,13 @@ export const dashboardData = {
         expense: { actual: [180, 185, 190, 195, 200, 205], expected: [183, 188, 193, 198, 203, 208], budget: [185, 190, 195, 200, 205, 210] },
         profit: { actual: [270, 295, 310, 325, 310, 335], expected: [273, 298, 313, 328, 313, 338], budget: [275, 300, 315, 330, 315, 340] }
       },
-      productMix: [1800, 700, 400, 100],
+      productMix: [800, 500, 400, 600, 300, 200, 200],
       expenseBreakdown: [800, 250, 100, 50],
       taskMetrics: { total: 350, completed: 250, pending: 70, inProgress: 30 },
       compareData: {
         totalRevenue: "₹ 3.00 Cr",
         totalProfit: "₹ 1.84 Cr",
-        topProduct: "Gold Loan (60%)",
+        topProduct: "Fixed Contribution (27%)",
         highestExpense: "Salary (66%)",
         staffCount: "11 Employees"
       }
@@ -190,13 +190,13 @@ export const dashboardData = {
         expense: { actual: [150, 155, 160, 165, 170, 175], expected: [153, 158, 163, 168, 173, 178], budget: [155, 160, 165, 170, 175, 180] },
         profit: { actual: [230, 245, 250, 255, 270, 275], expected: [233, 248, 253, 258, 273, 278], budget: [235, 250, 255, 260, 275, 280] }
       },
-      productMix: [1000, 600, 600, 300],
+      productMix: [600, 400, 300, 500, 300, 200, 200],
       expenseBreakdown: [600, 200, 150, 50],
       taskMetrics: { total: 250, completed: 160, pending: 70, inProgress: 20 },
       compareData: {
         totalRevenue: "₹ 2.50 Cr",
         totalProfit: "₹ 1.52 Cr",
-        topProduct: "Gold Loan (40%)",
+        topProduct: "Fixed Contribution (24%)",
         highestExpense: "Salary (60%)",
         staffCount: "9 Employees"
       }
@@ -208,13 +208,13 @@ export const dashboardData = {
         expense: { actual: [120, 125, 130, 135, 140, 145], expected: [123, 128, 133, 138, 143, 148], budget: [125, 130, 135, 140, 145, 150] },
         profit: { actual: [180, 195, 200, 205, 210, 215], expected: [183, 198, 203, 208, 213, 218], budget: [185, 200, 205, 210, 215, 220] }
       },
-      productMix: [700, 400, 500, 400],
+      productMix: [400, 300, 200, 400, 300, 200, 200],
       expenseBreakdown: [400, 150, 100, 100],
       taskMetrics: { total: 200, completed: 120, pending: 60, inProgress: 20 },
       compareData: {
         totalRevenue: "₹ 2.00 Cr",
         totalProfit: "₹ 1.20 Cr",
-        topProduct: "Gold Loan (35%)",
+        topProduct: "Gold Loan (20%)",
         highestExpense: "Salary (53%)",
         staffCount: "7 Employees"
       }
@@ -226,13 +226,13 @@ export const dashboardData = {
         expense: { actual: [110, 115, 120, 120, 120, 115], expected: [113, 118, 123, 125, 125, 123], budget: [115, 120, 125, 130, 130, 130] },
         profit: { actual: [170, 175, 180, 190, 190, 195], expected: [173, 178, 183, 190, 195, 203], budget: [175, 180, 185, 190, 200, 210] }
       },
-      productMix: [600, 300, 400, 300],
+      productMix: [300, 200, 200, 300, 300, 200, 100],
       expenseBreakdown: [350, 120, 90, 80],
       taskMetrics: { total: 180, completed: 100, pending: 60, inProgress: 20 },
       compareData: {
         totalRevenue: "₹ 1.80 Cr",
         totalProfit: "₹ 1.10 Cr",
-        topProduct: "Gold Loan (37%)",
+        topProduct: "Fixed Contribution (19%)",
         highestExpense: "Salary (54%)",
         staffCount: "6 Employees"
       }
@@ -244,13 +244,13 @@ export const dashboardData = {
         expense: { actual: [100, 105, 110, 105, 115, 115], expected: [103, 108, 113, 108, 118, 118], budget: [105, 110, 115, 110, 120, 120] },
         profit: { actual: [150, 155, 160, 155, 165, 165], expected: [153, 158, 163, 158, 168, 168], budget: [155, 160, 165, 160, 170, 170] }
       },
-      productMix: [500, 300, 300, 200],
+      productMix: [300, 200, 100, 300, 200, 100, 100],
       expenseBreakdown: [300, 100, 80, 70],
       taskMetrics: { total: 150, completed: 90, pending: 50, inProgress: 10 },
       compareData: {
         totalRevenue: "₹ 1.60 Cr",
         totalProfit: "₹ 0.95 Cr",
-        topProduct: "Gold Loan (38%)",
+        topProduct: "Gold Loan (23%)",
         highestExpense: "Salary (54%)",
         staffCount: "5 Employees"
       }
@@ -262,13 +262,13 @@ export const dashboardData = {
         expense: { actual: [90, 95, 100, 95, 100, 100], expected: [93, 98, 103, 98, 103, 103], budget: [95, 100, 105, 100, 105, 105] },
         profit: { actual: [130, 135, 140, 135, 140, 140], expected: [133, 138, 143, 138, 143, 143], budget: [135, 140, 145, 140, 145, 145] }
       },
-      productMix: [400, 200, 300, 200],
+      productMix: [200, 150, 100, 300, 150, 100, 100],
       expenseBreakdown: [250, 90, 70, 60],
       taskMetrics: { total: 130, completed: 80, pending: 40, inProgress: 10 },
       compareData: {
         totalRevenue: "₹ 1.40 Cr",
         totalProfit: "₹ 0.85 Cr",
-        topProduct: "Gold Loan (36%)",
+        topProduct: "Gold Loan (27%)",
         highestExpense: "Salary (53%)",
         staffCount: "5 Employees"
       }
@@ -280,13 +280,13 @@ export const dashboardData = {
         expense: { actual: [80, 80, 85, 80, 80, 75], expected: [83, 83, 88, 83, 83, 78], budget: [85, 85, 90, 85, 85, 80] },
         profit: { actual: [120, 120, 125, 120, 120, 115], expected: [123, 123, 128, 123, 123, 118], budget: [125, 125, 130, 125, 125, 120] }
       },
-      productMix: [300, 200, 200, 100],
+      productMix: [200, 100, 100, 200, 100, 50, 50],
       expenseBreakdown: [200, 80, 60, 50],
       taskMetrics: { total: 110, completed: 70, pending: 30, inProgress: 10 },
       compareData: {
         totalRevenue: "₹ 1.20 Cr",
         totalProfit: "₹ 0.75 Cr",
-        topProduct: "Gold Loan (37%)",
+        topProduct: "Fixed Contribution (25%)",
         highestExpense: "Salary (51%)",
         staffCount: "4 Employees"
       }
@@ -298,13 +298,13 @@ export const dashboardData = {
         expense: { actual: [70, 70, 70, 65, 60, 55], expected: [73, 73, 73, 68, 63, 58], budget: [75, 75, 75, 70, 65, 60] },
         profit: { actual: [110, 110, 110, 105, 100, 95], expected: [113, 113, 113, 108, 103, 98], budget: [115, 115, 115, 110, 105, 100] }
       },
-      productMix: [300, 150, 150, 50],
+      productMix: [100, 50, 50, 150, 50, 50, 50],
       expenseBreakdown: [150, 70, 50, 40],
       taskMetrics: { total: 90, completed: 50, pending: 30, inProgress: 10 },
       compareData: {
         totalRevenue: "₹ 1.00 Cr",
         totalProfit: "₹ 0.60 Cr",
-        topProduct: "Gold Loan (46%)",
+        topProduct: "Gold Loan (30%)",
         highestExpense: "Salary (48%)",
         staffCount: "4 Employees"
       }
