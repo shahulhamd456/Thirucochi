@@ -385,6 +385,34 @@ export const getTrendData = (branch, metric, timeframe) => {
     };
   }
 
+  if (timeframe === "Quarters") {
+    const monthlyActual = padData(baseData.actual);
+    const monthlyExpected = padData(baseData.expected);
+    const monthlyBudget = padData(baseData.budget);
+    
+    return {
+      categories: ["Jan - Mar", "Apr - Jun", "Jul - Sep", "Oct - Dec"],
+      actual: [
+        monthlyActual.slice(0, 3).reduce((a, b) => a + b, 0),
+        monthlyActual.slice(3, 6).reduce((a, b) => a + b, 0),
+        monthlyActual.slice(6, 9).reduce((a, b) => a + b, 0),
+        monthlyActual.slice(9, 12).reduce((a, b) => a + b, 0)
+      ],
+      expected: [
+        monthlyExpected.slice(0, 3).reduce((a, b) => a + b, 0),
+        monthlyExpected.slice(3, 6).reduce((a, b) => a + b, 0),
+        monthlyExpected.slice(6, 9).reduce((a, b) => a + b, 0),
+        monthlyExpected.slice(9, 12).reduce((a, b) => a + b, 0)
+      ],
+      budget: [
+        monthlyBudget.slice(0, 3).reduce((a, b) => a + b, 0),
+        monthlyBudget.slice(3, 6).reduce((a, b) => a + b, 0),
+        monthlyBudget.slice(6, 9).reduce((a, b) => a + b, 0),
+        monthlyBudget.slice(9, 12).reduce((a, b) => a + b, 0)
+      ]
+    };
+  }
+
   if (timeframe === "Months") {
     return {
       categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],

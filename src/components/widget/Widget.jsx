@@ -2,7 +2,7 @@ import Card from "components/card";
 
 const Widget = ({ icon, title, subtitle, detail, trend }) => {
   return (
-    <Card extra="p-4 rounded-[24px] bg-white/50 dark:bg-navy-800/50 backdrop-blur-xl border border-white dark:border-white/5 group hover:shadow-2xl transition-all duration-500">
+    <Card extra="p-4 rounded-[24px] bg-white/50 dark:bg-navy-800/50 backdrop-blur-xl border border-gray-200 dark:border-white/10 group hover:shadow-2xl transition-all duration-500">
       <div className="flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 dark:bg-navy-900 group-hover:scale-110 transition-transform">

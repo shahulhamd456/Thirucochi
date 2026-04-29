@@ -43,18 +43,18 @@ import {
 
 const routes = [
   {
-    name: "Dashboard",
-    layout: "/admin",
-    path: "default",
-    icon: <MdHome className="h-6 w-6" />,
-    component: <MainDashboard />,
-  },
-  {
     name: "Executive Dashboard",
     layout: "/admin",
     path: "executive",
     icon: <MdBarChart className="h-6 w-6" />,
     component: <ExecutiveDashboard />,
+  },
+  {
+    name: "Dashboard",
+    layout: "/admin",
+    path: "default",
+    icon: <MdHome className="h-6 w-6" />,
+    component: <MainDashboard />,
   },
   {
     name: "Customers",

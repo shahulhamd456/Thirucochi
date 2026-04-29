@@ -134,7 +134,7 @@ const Navbar = (props) => {
         >
           <span className="text-gray-500 dark:text-gray-400">Today</span>
           <span className="h-1 w-1 shrink-0 rounded-full bg-gray-300 dark:bg-gray-600" />
-          <span>New leads</span>
+          <span>New contacts</span>
           <span className="rounded-full bg-[#06B6D4] px-2 py-0.5 text-[11px] font-bold text-white shadow-sm">27</span>
         </Link>
       </div>

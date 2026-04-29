@@ -18,13 +18,31 @@ import {
 
 const METRIC_LABELS = { revenue: "Revenue", expense: "Expense", profit: "Profit" };
 
+const renderPercentage = (current, previous, isExpense = false) => {
+  if (!previous) return null;
+  const diff = current - previous;
+  const percent = (diff / previous) * 100;
+  if (percent === 0) return null;
+  
+  const isPositive = percent > 0;
+  const isGood = isExpense ? !isPositive : isPositive;
+  
+  const colorClass = isGood 
+    ? "text-green-600 bg-green-50 dark:bg-green-500/10 dark:text-green-400" 
+    : "text-red-600 bg-red-50 dark:bg-red-500/10 dark:text-red-400";
+  const sign = isPositive ? "+" : "";
+  
+  return (
+    <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md ${colorClass}`}>
+      {sign}{percent.toFixed(1)}%
+    </span>
+  );
+};
+
 const ExecutiveDashboard = () => {
   const [selectedBranch, setSelectedBranch] = useState("All Branches");
   const [metric, setMetric] = useState("revenue");
-  
-  const [compareBranchA, setCompareBranchA] = useState("Kochi");
-  const [compareBranchB, setCompareBranchB] = useState("Trivandrum");
-
+  const [tableFilter, setTableFilter] = useState("All");
   const [visibleSeries, setVisibleSeries] = useState(["Actual", "Expected", "Budget"]);
   const [timeframe, setTimeframe] = useState("All"); // Month, Year, All
 
@@ -67,9 +85,34 @@ const ExecutiveDashboard = () => {
   };
 
 
-  // ─── Head-to-Head Comparison Data ─────────────────────────────────────────
-  const branchAData = dashboardData.branchDetails[compareBranchA].compareData;
-  const branchBData = dashboardData.branchDetails[compareBranchB].compareData;
+  // ─── Branch Performance Table Data ────────────────────────────────────────
+  const branchTableData = dashboardData.branches.map(branch => {
+    const revData = dashboardData.branchDetails[branch].trend.revenue.actual;
+    const expData = dashboardData.branchDetails[branch].trend.expense.actual;
+    
+    // Scale by 10000 to match the Cr/L scaling used everywhere else
+    const currentRev = (revData[revData.length - 1] || 0) * 10000;
+    const prevRev = (revData[revData.length - 2] || 0) * 10000;
+    
+    const currentExp = (expData[expData.length - 1] || 0) * 10000;
+    const prevExp = (expData[expData.length - 2] || 0) * 10000;
+
+    return { name: branch, currentRev, prevRev, currentExp, prevExp };
+  });
+
+  let filteredTableData = [...branchTableData];
+  if (tableFilter === "All") {
+    filteredTableData.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (tableFilter === "High Revenue") {
+    filteredTableData.sort((a, b) => b.currentRev - a.currentRev);
+    filteredTableData = filteredTableData.slice(0, 5);
+  } else if (tableFilter === "High Expenses") {
+    filteredTableData.sort((a, b) => b.currentExp - a.currentExp);
+    filteredTableData = filteredTableData.slice(0, 5);
+  }
+
+  const top5Revenue = [...branchTableData].sort((a, b) => b.currentRev - a.currentRev).slice(0, 5);
+  const bottom5Revenue = [...branchTableData].sort((a, b) => a.currentRev - b.currentRev).slice(0, 5);
 
   // ─── Secondary Charts ───────────────────────────────────────────────────────
   const productMixSeries = (selectedBranch === "All Branches"
@@ -158,6 +201,71 @@ const ExecutiveDashboard = () => {
        
       </div>
 
+      {/* ── Top/Bottom Revenue Branches ── */}
+      <div className="mb-6 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <Card extra="p-6">
+          <h3 className="mb-4 text-lg font-bold text-[#003366] dark:text-white">Top 5 Revenue Branches</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
+              <thead className="border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-400 tracking-wider">
+                <tr>
+                  <th className="py-3">Branch</th>
+                  <th className="py-3">Current Revenue</th>
+                  <th className="py-3">Previous</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                {top5Revenue.map((row) => (
+                  <tr key={row.name}>
+                    <td className="py-3 font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                      <MdOutlineLocationOn className="text-brand-500" /> {row.name}
+                    </td>
+                    <td className="py-3 font-bold text-green-600">
+                      <div className="flex items-center">
+                        {formatCurrency(row.currentRev)}
+                        {renderPercentage(row.currentRev, row.prevRev, false)}
+                      </div>
+                    </td>
+                    <td className="py-3 font-medium text-gray-500">{formatCurrency(row.prevRev)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+        
+        <Card extra="p-6">
+          <h3 className="mb-4 text-lg font-bold text-[#003366] dark:text-white">Bottom 5 Revenue Branches</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
+              <thead className="border-b border-gray-200 dark:border-white/10 text-xs uppercase text-gray-400 tracking-wider">
+                <tr>
+                  <th className="py-3">Branch</th>
+                  <th className="py-3">Current Revenue</th>
+                  <th className="py-3">Previous</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-white/5">
+                {bottom5Revenue.map((row) => (
+                  <tr key={row.name}>
+                    <td className="py-3 font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                      <MdOutlineLocationOn className="text-brand-500" /> {row.name}
+                    </td>
+                    <td className="py-3 font-bold text-green-600">
+                      <div className="flex items-center">
+                        {formatCurrency(row.currentRev)}
+                        {renderPercentage(row.currentRev, row.prevRev, false)}
+                      </div>
+                    </td>
+                    <td className="py-3 font-medium text-gray-500">{formatCurrency(row.prevRev)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </div>
+
       {/* ── Large Hero Chart ── */}
       <Card extra="mb-6 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-2">
@@ -188,7 +296,7 @@ const ExecutiveDashboard = () => {
 
             {/* Timeframe Selector Pills */}
             <div className="hidden lg:flex items-center gap-1 rounded-lg bg-gray-50 p-1 dark:bg-navy-900/50 mr-2 border border-gray-100 dark:border-white/10">
-              {["All", "Years", "Months"].map((t) => (
+              {["All", "Years", "Quarters", "Months"].map((t) => (
                 <button
                   key={t}
                   onClick={() => setTimeframe(t)}
@@ -278,69 +386,29 @@ const ExecutiveDashboard = () => {
         </div>
       </Card>
 
-      {/* ── Head-to-Head Comparison ── */}
+      {/* ── Branch Performance Matrix ── */}
       <Card extra="mb-6 p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-4">
           <div>
-            <h3 className="text-xl font-bold text-[#003366] dark:text-white">Head-to-Head Comparison</h3>
-            <p className="text-sm text-gray-400">Direct comparison of key metrics</p>
+            <h3 className="text-xl font-bold text-[#003366] dark:text-white">Branch Performance</h3>
+            <p className="text-sm text-gray-400">Current vs Previous Month tracking</p>
           </div>
-          <div className="flex items-center gap-2 sm:gap-4">
-            <Dropdown
-              button={
-                <button className="flex items-center justify-between gap-2 w-32 sm:w-40 rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 sm:px-4 text-xs sm:text-sm font-bold text-brand-600 transition-colors hover:bg-brand-100 focus:outline-none focus:ring-2 focus:ring-brand-400 dark:border-brand-700 dark:bg-brand-400/10 dark:text-brand-400 dark:hover:bg-brand-400/20">
-                  <span className="flex items-center"><MdOutlineLocationOn className="mr-1 text-lg" /> {compareBranchA}</span>
-                  <MdKeyboardArrowDown className="text-xl" />
+          <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1 rounded-xl bg-gray-100 p-1 dark:bg-navy-900">
+              {["All", "High Revenue", "High Expenses"].map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setTableFilter(f)}
+                  className={`rounded-lg px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
+                    tableFilter === f
+                      ? "bg-white text-[#003366] shadow dark:bg-navy-700 dark:text-white"
+                      : "text-gray-500 hover:text-[#003366] dark:text-gray-400"
+                  }`}
+                >
+                  {f}
                 </button>
-              }
-              animation="origin-top right-0 mt-12 w-32 sm:w-40"
-              classNames="py-2 top-0 -left-0 w-32 sm:w-40 rounded-xl bg-white shadow-xl dark:bg-navy-700 border border-gray-100 dark:border-white/10"
-            >
-              <div className="flex flex-col gap-1 px-2">
-                {dashboardData.branches.map((branch) => (
-                  <button
-                    key={branch}
-                    onClick={() => setCompareBranchA(branch)}
-                    className={`flex w-full items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      compareBranchA === branch
-                        ? "bg-brand-50 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
-                        : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
-                    }`}
-                  >
-                    <MdOutlineLocationOn className="mr-2 text-lg" /> {branch}
-                  </button>
-                ))}
-              </div>
-            </Dropdown>
-            
-            <span className="text-gray-400 font-bold px-1 text-sm">VS</span>
-            
-            <Dropdown
-              button={
-                <button className="flex items-center justify-between gap-2 w-32 sm:w-40 rounded-xl border border-brand-200 bg-brand-50 px-3 py-2 sm:px-4 text-xs sm:text-sm font-bold text-brand-600 transition-colors hover:bg-brand-100 focus:outline-none focus:ring-2 focus:ring-brand-400 dark:border-brand-700 dark:bg-brand-400/10 dark:text-brand-400 dark:hover:bg-brand-400/20">
-                  <span className="flex items-center"><MdOutlineLocationOn className="mr-1 text-lg" /> {compareBranchB}</span>
-                  <MdKeyboardArrowDown className="text-xl" />
-                </button>
-              }
-              animation="origin-top right-0 mt-12 w-32 sm:w-40"
-              classNames="py-2 top-0 -left-0 w-32 sm:w-40 rounded-xl bg-white shadow-xl dark:bg-navy-700 border border-gray-100 dark:border-white/10"
-            >
-              <div className="flex flex-col gap-1 px-2">
-                {dashboardData.branches.map((branch) => (
-                  <button
-                    key={branch}
-                    onClick={() => setCompareBranchB(branch)}
-                    className={`flex w-full items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      compareBranchB === branch
-                        ? "bg-brand-50 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
-                        : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
-                    }`}
-                  >
-                    <MdOutlineLocationOn className="mr-2 text-lg" /> {branch}
-                  </button>
-                ))}
-              </div>
-            </Dropdown>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -348,37 +416,35 @@ const ExecutiveDashboard = () => {
           <table className="w-full text-left text-sm text-gray-600 dark:text-gray-300">
             <thead className="bg-gray-50 dark:bg-navy-900/50 text-[#003366] dark:text-white text-xs uppercase font-bold tracking-wider">
               <tr>
-                <th className="px-6 py-4">Metric / Detail</th>
-                <th className="px-6 py-4">{compareBranchA}</th>
-                <th className="px-6 py-4">{compareBranchB}</th>
+                <th className="px-6 py-4">Branch</th>
+                <th className="px-6 py-4">Current Revenue</th>
+                <th className="px-6 py-4">Previous Revenue</th>
+                <th className="px-6 py-4">Current Expense</th>
+                <th className="px-6 py-4">Previous Expense</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 dark:divide-white/10">
-              <tr className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">Total Revenue</td>
-                <td className="px-6 py-4 font-bold text-green-600">{branchAData.totalRevenue}</td>
-                <td className="px-6 py-4 font-bold text-green-600">{branchBData.totalRevenue}</td>
-              </tr>
-              <tr className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">Total Profit</td>
-                <td className="px-6 py-4 text-brand-500 font-bold">{branchAData.totalProfit}</td>
-                <td className="px-6 py-4 text-brand-500 font-bold">{branchBData.totalProfit}</td>
-              </tr>
-              <tr className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">Top Product</td>
-                <td className="px-6 py-4">{branchAData.topProduct}</td>
-                <td className="px-6 py-4">{branchBData.topProduct}</td>
-              </tr>
-              <tr className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">Highest Expense</td>
-                <td className="px-6 py-4 text-red-500">{branchAData.highestExpense}</td>
-                <td className="px-6 py-4 text-red-500">{branchBData.highestExpense}</td>
-              </tr>
-              <tr className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">Staff Count</td>
-                <td className="px-6 py-4">{branchAData.staffCount}</td>
-                <td className="px-6 py-4">{branchBData.staffCount}</td>
-              </tr>
+              {filteredTableData.map((row) => (
+                <tr key={row.name} className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                  <td className="px-6 py-4 font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                    <MdOutlineLocationOn className="text-brand-500 text-lg" /> {row.name}
+                  </td>
+                  <td className="px-6 py-4 font-bold text-green-600">
+                    <div className="flex items-center">
+                      {formatCurrency(row.currentRev)}
+                      {renderPercentage(row.currentRev, row.prevRev, false)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 font-medium text-green-600/70">{formatCurrency(row.prevRev)}</td>
+                  <td className="px-6 py-4 font-bold text-red-500">
+                    <div className="flex items-center">
+                      {formatCurrency(row.currentExp)}
+                      {renderPercentage(row.currentExp, row.prevExp, true)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 font-medium text-red-500/70">{formatCurrency(row.prevExp)}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
