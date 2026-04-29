@@ -217,8 +217,10 @@ const ExecutiveDashboard = () => {
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                 {top5Revenue.map((row) => (
                   <tr key={row.name}>
-                    <td className="py-3 font-bold text-gray-900 dark:text-white flex items-center gap-1">
-                      <MdOutlineLocationOn className="text-brand-500" /> {row.name}
+                    <td className="py-3 font-bold text-gray-900 dark:text-white">
+                      <div className="flex items-center gap-1">
+                        <MdOutlineLocationOn className="text-brand-500" /> {row.name}
+                      </div>
                     </td>
                     <td className="py-3 font-bold text-green-600">
                       <div className="flex items-center">
@@ -248,8 +250,10 @@ const ExecutiveDashboard = () => {
               <tbody className="divide-y divide-gray-100 dark:divide-white/5">
                 {bottom5Revenue.map((row) => (
                   <tr key={row.name}>
-                    <td className="py-3 font-bold text-gray-900 dark:text-white flex items-center gap-1">
-                      <MdOutlineLocationOn className="text-brand-500" /> {row.name}
+                    <td className="py-3 font-bold text-gray-900 dark:text-white">
+                      <div className="flex items-center gap-1">
+                        <MdOutlineLocationOn className="text-brand-500" /> {row.name}
+                      </div>
                     </td>
                     <td className="py-3 font-bold text-green-600">
                       <div className="flex items-center">
@@ -381,7 +385,7 @@ const ExecutiveDashboard = () => {
             </Dropdown>
           </div>
         </div>
-        <div className="h-[450px] w-full">
+        <div className="h-[450px] w-full overflow-hidden">
           <BarChart chartData={heroSeries} chartOptions={heroOptions} />
         </div>
       </Card>

@@ -117,7 +117,7 @@ export default function Admin(props) {
         onToggleCollapsed={toggleSidebarCollapsed}
       />
       {/* Navbar & Main Content */}
-      <div className="h-full w-full min-h-screen bg-white dark:bg-navy-900 transition-colors">
+      <div className="h-full w-full min-h-screen bg-white dark:bg-navy-900 transition-colors overflow-x-hidden">
         {/* Subtle Background Accent */}
         <div className="fixed top-0 left-0 w-full h-full pointer-events-none opacity-[0.03] dark:opacity-[0.05] z-0 overflow-hidden">
            <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-[#003366] blur-[150px]" />
