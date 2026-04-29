@@ -4,9 +4,7 @@ import React from "react";
 import MainDashboard from "views/admin/default";
 import Customers from "views/admin/customers";
 import Leads from "views/admin/leads";
-import MutualFunds from "views/admin/investments/mutual-funds";
-import SIP from "views/admin/investments/sip";
-import LumpSum from "views/admin/investments/lump-sum";
+
 import Portfolio from "views/admin/portfolio";
 import LifeInsurance from "views/admin/insurance/life";
 import GeneralInsurance from "views/admin/insurance/general";
@@ -70,29 +68,7 @@ const routes = [
     icon: <MdLeaderboard className="h-6 w-6" />,
     component: <Leads />,
   },
-  {
-    name: "Investments",
-    layout: "/admin",
-    path: "investments",
-    icon: <MdTrendingUp className="h-6 w-6" />,
-    children: [
-      {
-        name: "Mutual Funds",
-        path: "investments/mutual-funds",
-        component: <MutualFunds />,
-      },
-      {
-        name: "SIP",
-        path: "investments/sip",
-        component: <SIP />,
-      },
-      {
-        name: "Lump Sum",
-        path: "investments/lump-sum",
-        component: <LumpSum />,
-      },
-    ],
-  },
+
   {
     name: "Portfolio",
     layout: "/admin",
