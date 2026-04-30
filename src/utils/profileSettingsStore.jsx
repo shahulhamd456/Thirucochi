@@ -1,9 +1,9 @@
-const PROFILE_STORAGE_KEY = "finance-crm-profile";
+const PROFILE_STORAGE_KEY = "thirukochi-profile";
 
 const defaultForm = {
   fullName: "Robert Brown",
   email: "robert@financecrm.com",
-  firmName: "Finance CRM Advisory",
+  firmName: "Thirukochi Advisory",
   amfiRegNo: "ARN-122455",
   phone: "+91 98765 43210",
   designation: "Senior Wealth Advisor",

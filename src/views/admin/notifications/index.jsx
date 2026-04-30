@@ -239,7 +239,7 @@ const Notifications = () => {
                  <MdWarning className="text-2xl text-orange-500" />
                  <div>
                     <p className="text-[10px] font-black uppercase text-orange-600 tracking-widest leading-none mb-1">Unauthorized Login</p>
-                    <p className="text-[11px] text-gray-500 font-medium leading-relaxed">Failed attempt from IP: 192.XXX.X to Finance CRM Admin Portal.</p>
+                    <p className="text-[11px] text-gray-500 font-medium leading-relaxed">Failed attempt from IP: 192.XXX.X to Thirukochi Admin Portal.</p>
                  </div>
               </div>
            </Card>

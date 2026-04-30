@@ -2,7 +2,7 @@ import { apiGet, apiPost } from "api/client";
 import { API } from "api/endpoints";
 import { isLiveDynamicData } from "config/dataMode";
 
-const STORAGE_KEY = "finance-crm-recent-searches";
+const STORAGE_KEY = "thirukochi-recent-searches";
 const MAX = 6;
 
 function readLocal() {

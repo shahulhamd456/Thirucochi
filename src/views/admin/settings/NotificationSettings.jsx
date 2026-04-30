@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Card from "components/card";
 import { MdEmail, MdPhoneAndroid, MdSms, MdCampaign } from "react-icons/md";
 
-const NOTIFICATION_PREFS_KEY = "finance-crm-notification-prefs";
+const NOTIFICATION_PREFS_KEY = "thirukochi-notification-prefs";
 
 function loadNotificationPrefs() {
   try {
@@ -99,7 +99,7 @@ const NotificationSettings = () => {
           <Row
             icon={<MdCampaign className="text-xl" />}
             title="Product & training updates"
-            desc="Occasional messages from Finance CRM."
+            desc="Occasional messages from Thirukochi."
             on={marketing}
             onToggle={() => setMarketing(!marketing)}
           />

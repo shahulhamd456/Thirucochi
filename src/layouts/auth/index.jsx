@@ -26,7 +26,7 @@ export default function Auth({ children }) {
                               <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                            </svg>
                         </div>
-                        <h2 className="mb-4 text-4xl font-black uppercase tracking-tighter">Finance CRM</h2>
+                        <h2 className="mb-4 text-4xl font-black uppercase tracking-tighter">Thirukochi</h2>
                         <p className="max-w-md text-lg font-medium opacity-80 leading-relaxed">
                            Manage your clients, investments, and pipeline with our state-of-the-art administrative dashboard.
                         </p>

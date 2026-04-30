@@ -46,7 +46,7 @@ const Sidebar = ({ open, onClose, collapsed = false, onToggleCollapsed, routes =
               </div>
               <div className={`min-w-0 ${collapsed ? "hidden xl:hidden" : ""}`}>
                 <p className="text-sm font-black uppercase leading-tight tracking-tighter text-brand-900 dark:text-white">
-                  Finance CRM
+                  Thirukochi
                 </p>
                 <p className="text-[10px] font-bold uppercase tracking-[2px] text-brand-500/80">Advisor Console</p>
               </div>

@@ -2,7 +2,7 @@ import { apiGet, apiPut } from "api/client";
 import { API } from "api/endpoints";
 import { isLiveDynamicData } from "config/dataMode";
 
-const STORAGE_KEY = "finance-crm-notifications";
+const STORAGE_KEY = "thirukochi-notifications";
 
 const seedNotifications = [
   {

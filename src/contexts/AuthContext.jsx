@@ -9,8 +9,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Check for persisted user session
-    const storedUser = localStorage.getItem("finance-crm-user");
-    const profileData = localStorage.getItem("finance-crm-profile");
+    const storedUser = localStorage.getItem("thirukochi-user");
+    const profileData = localStorage.getItem("thirukochi-profile");
     
     if (storedUser) {
       try {
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
         setUser(userObj);
         setIsAuthenticated(true);
       } catch (error) {
-        localStorage.removeItem("finance-crm-user");
+        localStorage.removeItem("thirukochi-user");
       }
     }
     setIsLoading(false);
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
       
       setUser(mockUser);
       setIsAuthenticated(true);
-      localStorage.setItem("finance-crm-user", JSON.stringify(mockUser));
+      localStorage.setItem("thirukochi-user", JSON.stringify(mockUser));
       setIsLoading(false);
       return { success: true };
     }
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
       
       setUser(mockUser);
       setIsAuthenticated(true);
-      localStorage.setItem("finance-crm-user", JSON.stringify(mockUser));
+      localStorage.setItem("thirukochi-user", JSON.stringify(mockUser));
       setIsLoading(false);
       return { success: true };
     }
@@ -87,13 +87,13 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     setIsAuthenticated(false);
-    localStorage.removeItem("finance-crm-user");
+    localStorage.removeItem("thirukochi-user");
   };
 
   const updateUser = (userData) => {
     setUser((prev) => {
       const next = { ...prev, ...userData };
-      localStorage.setItem("finance-crm-user", JSON.stringify(next));
+      localStorage.setItem("thirukochi-user", JSON.stringify(next));
       return next;
     });
   };

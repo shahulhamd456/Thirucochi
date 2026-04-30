@@ -399,7 +399,7 @@ const ProfileSettings = () => {
               <h4 className="text-lg font-black uppercase tracking-tight text-brand-900 dark:text-white">Public directory</h4>
             </div>
             <p className="mb-6 text-xs font-medium leading-relaxed text-gray-500 dark:text-gray-400">
-              Control how your advisor profile appears on the Finance CRM investor directory.
+              Control how your advisor profile appears on the Thirukochi investor directory.
             </p>
             <div className="space-y-3">
               <ToggleRow label="Show ARN / EUIN on card" on={showArnStatus} onToggle={() => setShowArnStatus(!showArnStatus)} />

@@ -5,7 +5,7 @@ import Sidebar from "components/sidebar";
 import Footer from "components/footer/Footer";
 import staffRoutes from "../../routesStaff.jsx";
 
-const SIDEBAR_COLLAPSED_KEY = "finance-crm-sidebar-collapsed";
+const SIDEBAR_COLLAPSED_KEY = "thirukochi-sidebar-collapsed";
 
 export default function Staff(props) {
   const { ...rest } = props;
@@ -135,7 +135,7 @@ export default function Staff(props) {
           <div className="h-full">
             <Navbar
               onOpenSidenav={() => setOpen(true)}
-              logoText={"Finance CRM"}
+              logoText={"Thirukochi"}
               brandText={currentRoute}
               secondary={getActiveNavbar(staffRoutes)}
               {...rest}

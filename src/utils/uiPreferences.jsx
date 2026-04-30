@@ -1,4 +1,4 @@
-const STORAGE_KEY = "finance-crm-ui-prefs";
+const STORAGE_KEY = "thirukochi-ui-prefs";
 
 const defaultPrefs = {
   dark: false,
@@ -38,7 +38,7 @@ export function writeUiPrefs(prefs) {
     /* quota or private mode */
   }
   applyUiPrefs(prefs);
-  window.dispatchEvent(new CustomEvent("finance-crm-ui-prefs", { detail: prefs }));
+  window.dispatchEvent(new CustomEvent("thirukochi-ui-prefs", { detail: prefs }));
 }
 
 /** Merge partial prefs, persist, apply, and notify listeners. */

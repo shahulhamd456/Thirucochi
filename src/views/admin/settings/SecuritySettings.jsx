@@ -14,11 +14,11 @@ import {
   MdEmail,
 } from "react-icons/md";
 
-const SECURITY_PREFS_KEY = "finance-crm-security-prefs";
+const SECURITY_PREFS_KEY = "thirukochi-security-prefs";
 
 const MOCK_SESSIONS = [
   { id: "1", label: "Chrome on Windows", detail: "Mumbai · Active now", current: true },
-  { id: "2", label: "Finance CRM mobile", detail: "Last active 2 days ago", current: false },
+  { id: "2", label: "Thirukochi mobile", detail: "Last active 2 days ago", current: false },
   { id: "3", label: "Safari on Mac", detail: "Last active 12 days ago", current: false },
 ];
 

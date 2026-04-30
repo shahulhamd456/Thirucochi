@@ -12,8 +12,8 @@ const ThemeSettings = () => {
 
   useEffect(() => {
     const onPrefs = () => syncFromStorage();
-    window.addEventListener("finance-crm-ui-prefs", onPrefs);
-    return () => window.removeEventListener("finance-crm-ui-prefs", onPrefs);
+    window.addEventListener("thirukochi-ui-prefs", onPrefs);
+    return () => window.removeEventListener("thirukochi-ui-prefs", onPrefs);
   }, [syncFromStorage]);
 
   const toggleDarkMode = () => {

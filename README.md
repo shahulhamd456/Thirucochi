@@ -1,4 +1,4 @@
-# Finance CRM
+# Thirukochi
 
 A React Dashboard built with Tailwind CSS.
 

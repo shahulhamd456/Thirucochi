@@ -76,8 +76,8 @@ const Navbar = (props) => {
         setDarkmode(readUiPrefs().dark);
       }
     };
-    window.addEventListener("finance-crm-ui-prefs", onPrefs);
-    return () => window.removeEventListener("finance-crm-ui-prefs", onPrefs);
+    window.addEventListener("thirukochi-ui-prefs", onPrefs);
+    return () => window.removeEventListener("thirukochi-ui-prefs", onPrefs);
   }, []);
 
   const onGlobalSearch = () => {
@@ -116,7 +116,7 @@ const Navbar = (props) => {
         <div className="min-w-0">
           <div className="mb-0.5 flex items-center gap-2">
             <span className="text-[10px] font-black uppercase tracking-[3px] text-brand-500">
-              {logoText || "Finance CRM"}
+              {logoText || "Thirukochi"}
             </span>
             <span className="text-[10px] text-gray-300 dark:text-gray-500">/</span>
             <span className="text-[10px] font-bold uppercase tracking-[2px] text-gray-400 dark:text-gray-300">
