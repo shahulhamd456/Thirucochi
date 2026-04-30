@@ -23,15 +23,15 @@ const renderPercentage = (current, previous, isExpense = false) => {
   const diff = current - previous;
   const percent = (diff / previous) * 100;
   if (percent === 0) return null;
-  
+
   const isPositive = percent > 0;
   const isGood = isExpense ? !isPositive : isPositive;
-  
-  const colorClass = isGood 
-    ? "text-green-600 bg-green-50 dark:bg-green-500/10 dark:text-green-400" 
+
+  const colorClass = isGood
+    ? "text-green-600 bg-green-50 dark:bg-green-500/10 dark:text-green-400"
     : "text-red-600 bg-red-50 dark:bg-red-500/10 dark:text-red-400";
   const sign = isPositive ? "+" : "";
-  
+
   return (
     <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md ${colorClass}`}>
       {sign}{percent.toFixed(1)}%
@@ -47,7 +47,7 @@ const ExecutiveDashboard = () => {
   const [timeframe, setTimeframe] = useState("All"); // Month, Year, All
 
   const toggleSeries = (s) => {
-    setVisibleSeries(prev => 
+    setVisibleSeries(prev =>
       prev.includes(s) ? prev.filter(item => item !== s) : [...prev, s]
     );
   };
@@ -67,19 +67,19 @@ const ExecutiveDashboard = () => {
   ];
 
   const heroSeries = baseSeries.filter(s => visibleSeries.includes(s.name));
-  
+
   const heroOptions = {
     ...getBarChartOptions(trendData.categories),
     plotOptions: { bar: { horizontal: false, columnWidth: "55%", borderRadius: 4 } },
-    xaxis: { 
-      ...getBarChartOptions(trendData.categories).xaxis, 
+    xaxis: {
+      ...getBarChartOptions(trendData.categories).xaxis,
       tickAmount: undefined,
-      labels: { 
+      labels: {
         style: { colors: "#A3AED0", fontSize: "11px", fontWeight: "500" },
         hideOverlappingLabels: false,
         rotate: trendData.categories.length > 12 ? -45 : 0,
         rotateAlways: trendData.categories.length > 12,
-      } 
+      }
     },
     yaxis: { show: true, labels: { formatter: (val) => formatCurrency(val), style: { colors: "#A3AED0", fontSize: "12px", fontWeight: "500" } } }
   };
@@ -89,11 +89,11 @@ const ExecutiveDashboard = () => {
   const branchTableData = dashboardData.branches.map(branch => {
     const revData = dashboardData.branchDetails[branch].trend.revenue.actual;
     const expData = dashboardData.branchDetails[branch].trend.expense.actual;
-    
+
     // Scale by 10000 to match the Cr/L scaling used everywhere else
     const currentRev = (revData[revData.length - 1] || 0) * 10000;
     const prevRev = (revData[revData.length - 2] || 0) * 10000;
-    
+
     const currentExp = (expData[expData.length - 1] || 0) * 10000;
     const prevExp = (expData[expData.length - 2] || 0) * 10000;
 
@@ -160,11 +160,10 @@ const ExecutiveDashboard = () => {
             <div className="flex flex-col gap-1 px-2">
               <button
                 onClick={() => setSelectedBranch("All Branches")}
-                className={`flex w-full items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                  selectedBranch === "All Branches"
+                className={`flex w-full items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${selectedBranch === "All Branches"
                     ? "bg-brand-50 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
                     : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
-                }`}
+                  }`}
               >
                 <MdOutlineBusiness className="mr-2 text-lg" /> All Branches
               </button>
@@ -172,11 +171,10 @@ const ExecutiveDashboard = () => {
                 <button
                   key={branch}
                   onClick={() => setSelectedBranch(branch)}
-                  className={`flex w-full items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    selectedBranch === branch
+                  className={`flex w-full items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${selectedBranch === branch
                       ? "bg-brand-50 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
                       : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
-                  }`}
+                    }`}
                 >
                   <MdOutlineLocationOn className="mr-2 text-lg" /> {branch}
                 </button>
@@ -188,7 +186,7 @@ const ExecutiveDashboard = () => {
 
       {/* ── KPI Strip ── */}
       <div className="mb-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-       <Widget icon={<MdShowChart />} title={"Total Revenue"} subtitle={kpiData.revenue} detail={"This quarter"} trend={"+8.5%"} />
+        <Widget icon={<MdShowChart />} title={"Total Revenue"} subtitle={kpiData.revenue} detail={"This quarter"} trend={"+8.5%"} />
         <Widget icon={<MdAttachMoney />} title={"Total Expenses"} subtitle={kpiData.expenses} detail={"Updated daily"} trend={"+1.2%"} />
         <Widget
           icon={<MdAccountBalanceWallet />}
@@ -198,7 +196,7 @@ const ExecutiveDashboard = () => {
           trend={"+5.4%"}
         />
         <Widget icon={<MdTrendingUp />} title={"Active Loans"} subtitle={kpiData.aum} detail={"Portfolio value"} trend={"+12%"} />
-       
+
       </div>
 
       {/* ── Top/Bottom Revenue Branches ── */}
@@ -235,7 +233,7 @@ const ExecutiveDashboard = () => {
             </table>
           </div>
         </Card>
-        
+
         <Card extra="p-6">
           <h3 className="mb-4 text-lg font-bold text-[#003366] dark:text-white">Bottom 5 Revenue Branches</h3>
           <div className="overflow-x-auto">
@@ -279,7 +277,7 @@ const ExecutiveDashboard = () => {
             </h3>
             <p className="text-sm text-gray-400">Month-by-month Actual vs. Budget</p>
           </div>
-          
+
           <div className="flex flex-wrap items-center gap-2">
             {/* Metric Toggle — pill-style */}
             <div className="flex items-center gap-1 rounded-xl bg-gray-100 p-1 dark:bg-navy-900">
@@ -287,11 +285,10 @@ const ExecutiveDashboard = () => {
                 <button
                   key={m}
                   onClick={() => setMetric(m)}
-                  className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition-all ${
-                    metric === m
+                  className={`rounded-lg px-4 py-1.5 text-sm font-semibold transition-all ${metric === m
                       ? "bg-white text-[#003366] shadow dark:bg-navy-700 dark:text-white"
                       : "text-gray-500 hover:text-[#003366] dark:text-gray-400"
-                  }`}
+                    }`}
                 >
                   {METRIC_LABELS[m]}
                 </button>
@@ -304,11 +301,10 @@ const ExecutiveDashboard = () => {
                 <button
                   key={t}
                   onClick={() => setTimeframe(t)}
-                  className={`rounded-md px-3 py-1 text-xs font-bold transition-all capitalize ${
-                    timeframe === t
+                  className={`rounded-md px-3 py-1 text-xs font-bold transition-all capitalize ${timeframe === t
                       ? "bg-white text-brand-500 shadow-sm dark:bg-navy-700 dark:text-white"
                       : "text-gray-400 hover:text-brand-500"
-                  }`}
+                    }`}
                 >
                   {t}
                 </button>
@@ -325,18 +321,17 @@ const ExecutiveDashboard = () => {
                 </button>
               }
               animation="origin-top right-0 mt-3 w-56"
-              classNames="py-3 top-0 -left-0 w-56 rounded-2xl bg-white shadow-2xl dark:bg-navy-800 border border-gray-100 dark:border-white/10"
+              classNames="py-3 top-0 -left-15 w-56 rounded-2xl bg-white shadow-2xl dark:bg-navy-800 border border-gray-100 dark:border-white/10"
             >
               <div className="flex flex-col px-4 py-2">
                 <span className="mb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Select Branch</span>
                 <div className="grid grid-cols-1 gap-1 mb-4 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
                   <button
                     onClick={() => setSelectedBranch("All Branches")}
-                    className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      selectedBranch === "All Branches"
+                    className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${selectedBranch === "All Branches"
                         ? "bg-brand-50 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
                         : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
-                    }`}
+                      }`}
                   >
                     <span className="flex items-center"><MdOutlineBusiness className="mr-2" /> All Branches</span>
                     {selectedBranch === "All Branches" && <MdCheck />}
@@ -345,11 +340,10 @@ const ExecutiveDashboard = () => {
                     <button
                       key={b}
                       onClick={() => setSelectedBranch(b)}
-                      className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                        selectedBranch === b
+                      className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors ${selectedBranch === b
                           ? "bg-brand-50 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400"
                           : "text-gray-600 hover:bg-gray-100 dark:text-white dark:hover:bg-white/5"
-                      }`}
+                        }`}
                     >
                       <span className="flex items-center"><MdOutlineLocationOn className="mr-2" /> {b}</span>
                       {selectedBranch === b && <MdCheck />}
@@ -366,16 +360,14 @@ const ExecutiveDashboard = () => {
                       className="flex items-center justify-between text-sm font-medium text-gray-600 dark:text-white hover:text-brand-500 transition-colors"
                     >
                       <div className="flex items-center gap-2">
-                        <div className={`h-2.5 w-2.5 rounded-full ${
-                          s === "Actual" ? "bg-[#4318FF]" : s === "Expected" ? "bg-[#39B8FF]" : "bg-[#6AD2FF]"
-                        }`} />
+                        <div className={`h-2.5 w-2.5 rounded-full ${s === "Actual" ? "bg-[#4318FF]" : s === "Expected" ? "bg-[#39B8FF]" : "bg-[#6AD2FF]"
+                          }`} />
                         {s}
                       </div>
-                      <div className={`flex h-5 w-5 items-center justify-center rounded border transition-all ${
-                        visibleSeries.includes(s) 
-                          ? "border-brand-500 bg-brand-500 text-white" 
+                      <div className={`flex h-5 w-5 items-center justify-center rounded border transition-all ${visibleSeries.includes(s)
+                          ? "border-brand-500 bg-brand-500 text-white"
                           : "border-gray-200 dark:border-white/20"
-                      }`}>
+                        }`}>
                         {visibleSeries.includes(s) && <MdCheck className="text-xs" />}
                       </div>
                     </button>
@@ -403,11 +395,10 @@ const ExecutiveDashboard = () => {
                 <button
                   key={f}
                   onClick={() => setTableFilter(f)}
-                  className={`rounded-lg px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${
-                    tableFilter === f
+                  className={`rounded-lg px-3 py-1.5 text-xs sm:text-sm font-semibold transition-all ${tableFilter === f
                       ? "bg-white text-[#003366] shadow dark:bg-navy-700 dark:text-white"
                       : "text-gray-500 hover:text-[#003366] dark:text-gray-400"
-                  }`}
+                    }`}
                 >
                   {f}
                 </button>
